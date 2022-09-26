@@ -13,5 +13,5 @@ Haskell Implementation of Unit testing a basic calculator
 TODO
 
 ### Contributors
-* Alexander Sepelenco, sepelena@tcd.ie
-* Niall Sauvage, sauvagen@tcd.ie
+Alexander Sepelenco, sepelena@tcd.ie
+Niall Sauvage, sauvagen@tcd.ie
