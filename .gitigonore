@@ -1,6 +1,4 @@
-# Ignore yaml files
-*.yaml
-# Ignore yaml lock
-*.yaml.locl
-# Ignore stack work
+# Haskell Related Tools 
+*.yaml 
+*.yaml.lock
 .stack-work/
