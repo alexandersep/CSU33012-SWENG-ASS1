@@ -6,7 +6,7 @@ Haskell Implementation of Unit testing a basic calculator
 2. Enter CSU33012-SWENG-ASS1/ with `cd CSU33012-SWENG-ASS1/`
 3. Initialise the stack with `stack init` 
 4. Compile test folder with `stack test` 
-5. Give yourself executable permissions for the `run.sh` with `chmod +x run.sh`
+5. Give yourself executable permissions for the `run.sh` script with `chmod +x run.sh`
 6. Run Haskell programme with `./run.sh`
 
 ## Calculator Usage
