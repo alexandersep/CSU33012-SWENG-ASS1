@@ -1,0 +1,6 @@
+# Ignore yaml files
+*.yaml
+# Ignore yaml lock
+*.yaml.locl
+# Ignore stack work
+.stack-work/
