@@ -48,7 +48,6 @@ isOperator x
 charToString :: Char -> String
 charToString x = [x]
 
--- "-"
 isOperand :: String -> Bool
 isOperand "-" = False
 isOperand (x:xs)

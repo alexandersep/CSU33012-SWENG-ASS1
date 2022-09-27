@@ -1,0 +1,16 @@
+name: Haskell CI
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-haskell@v1
+      with:
+        ghc-version: '8.10.3'
+        enable-stack: true
+        stack-version: 'latest'
+    - name: Build
+      run: stack init
+    - name: Run tests
+      run: stack test
