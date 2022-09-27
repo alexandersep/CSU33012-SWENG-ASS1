@@ -48,8 +48,12 @@ isOperator x
 charToString :: Char -> String
 charToString x = [x]
 
+-- "-"
 isOperand :: String -> Bool
-isOperand (x:xs) = isDigit x && isOperand xs 
+isOperand "-" = False
+isOperand (x:xs)
+ | x == '-' = isOperand xs
+ | x /= '-' = isDigit x && isOperand xs
 isOperand [] = True
 
 divideSafe :: (Eq a, Fractional a) => a -> a -> Maybe a
@@ -85,17 +89,18 @@ infixValidator :: [String] -> Bool
 infixValidator [] = False
 infixValidator xs = infixValidator' xs && countBrackets xs 0 0
 
-
 infixValidator' :: [String] -> Bool
 infixValidator' (x:[]) = True
-infixValidator' (x:xs) | isOperator (head x) && (isOperand (head xs) || head xs == "(") = infixValidator' xs
-                       | isOperand x && (isOperator (head (head xs)) || head xs == ")") = infixValidator' xs
-                       | x == ")"  && (isOperator (head (head xs))   || head xs == ")") = infixValidator' xs 
-                       | x == "("  && (isOperand (head xs)           || head xs == "(") = infixValidator' xs 
-                       | otherwise = False
+infixValidator' (x:xs) 
+ | isOperator (head x) && (isOperand (head xs) || head xs == "(") = infixValidator' xs
+ | isOperand x && (isOperator (head (head xs)) || head xs == ")") = infixValidator' xs
+ | x == ")"  && (isOperator (head (head xs))   || head xs == ")") = infixValidator' xs 
+ | x == "("  && (isOperand (head xs)           || head xs == "(") = infixValidator' xs 
+ | otherwise = False
 
 countBrackets :: [String] -> Int -> Int -> Bool
 countBrackets [] open close = open == close 
-countBrackets (x:xs) open close | x == "("  = countBrackets xs (open+1) close
-                                | x == ")"  = countBrackets xs open (close+1)
-                                | otherwise = countBrackets xs open close
+countBrackets (x:xs) open close 
+ | x == "("  = countBrackets xs (open+1) close
+ | x == ")"  = countBrackets xs open (close+1)
+ | otherwise = countBrackets xs open close
