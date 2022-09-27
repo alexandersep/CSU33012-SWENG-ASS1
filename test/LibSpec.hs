@@ -65,25 +65,19 @@ spec = do
             (errorLeftAssociativity $ Just True) `shouldBe` "It has an associativity" 
         it "returns Error, does not have associativity for errorLeftAssociativity Nothing" $ do
             (errorLeftAssociativity $ Nothing) `shouldBe` "Error, does not have associativity" 
-        
---        it 
---            (operatorPrecedence '^') `shouldBe`  
 
-    --     it "returns Just 5 for 10/2" $ do
-    --       (divideSafe 10 2) `shouldBe` Just 5
+  describe "Validate function for Infix Expressions" $ do
+    it "Should return invalid for (30 + 5)2" $ do
+      infixValidator ["(", "30", "+", "5", ")", "2"] `shouldBe` False
+    
+    it "Should return valid for (30 + 5) + 2" $ do
+      infixValidator ["(", "30", "+", "5", ")", "+", "2"] `shouldBe` True
+    
+    it "Should return invalid for (30 + 5) + )" $ do
+      infixValidator ["(", "30", "+", "5", ")", "+", ")"] `shouldBe` False
+    
+    it "Should return invalid for (30 + 5) + 2)" $ do
+      infixValidator ["(", "30", "+", "5", ")", "+", "2", ")"] `shouldBe` False
 
-    --     it "returns Nothing for x/0" $ do
-    --       (divideSafe 10 0) `shouldBe` Nothing
-
-    --     -- some time after development starts we decide that we want
-    --     -- to return nothing if x > 100. This might arise because
-    --     -- stakeholders decide its a new feature requirement.
-    --     --  We add test cases for it.
-    --     -- Two that come to mind are to test that out code (that we
-    --     -- have not yet rewritten, will still work with x > 100 and y = 0.
-    --     -- A second case is x > 100 and y > 0 - the nortmal case.
-    --     it "should return nothing for x > 100, y == 0" $ do
-    --       (divideSafe 101 0) `shouldBe` Nothing
-
-    --     it "should return nothing for x > 100, y == 10" $ do
-    --       (divideSafe 101 10) `shouldBe` Nothing
+    it "Should return valid for (30 + 5) + 2" $ do
+      infixValidator ["(", "30", "+", "5", ")", "+", "2"] `shouldBe` True
