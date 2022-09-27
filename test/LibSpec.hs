@@ -30,3 +30,16 @@ spec = do
     it "should return nothing for x > 100, y == 10" $ do
       (divideSafe 101 10) `shouldBe` Nothing
 
+  describe "Validate function for Infix Expressions" $ do
+    it "Should return invalid for (30 + 5)2" $ do
+      infixValidator ["(", "30", "+", "5", ")", "2"] `shouldBe` False
+    
+    it "Should return valid for (30 + 5) + 2" $ do
+      infixValidator ["(", "30", "+", "5", ")", "+", "2"] `shouldBe` True
+    
+    it "Should return valid for (30 + 5) + )" $ do
+      infixValidator ["(", "30", "+", "5", ")", "+", ")"] `shouldBe` False
+    
+    it "Should return valid for (30 + 5) + 2)" $ do
+      infixValidator ["(", "30", "+", "5", ")", "+", "2", ")"] `shouldBe` False
+    

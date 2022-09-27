@@ -1,7 +1,9 @@
 module Lib
     ( calculator, divideSafe, isOperator, isOperand, 
       charToString, operatorPrecedence, 
-      isOperatorLeftAssociative, 
+      isOperatorLeftAssociative,
+      infixValidator,
+      infixValidator', countBrackets, 
       errorPrecedence, errorLeftAssociativity
     ) where
 
@@ -43,11 +45,6 @@ isOperator x
  | x == '+' || x == '-' || x == '*' || x == '/' || x == '^' = True
  | otherwise = False
 
-isBracket :: String -> Bool
-isBracket x
- | x == ")" || x == "(" = True
- | otherwise = False
-
 charToString :: Char -> String
 charToString x = [x]
 
@@ -86,15 +83,15 @@ errorLeftAssociativity x =
 
 infixValidator :: [String] -> Bool
 infixValidator [] = False
-infixValidator (x:xs) = infixValidator' (x:xs) && countBrackets (x:xs) 0 0
+infixValidator xs = infixValidator' xs && countBrackets xs 0 0
 
 
 infixValidator' :: [String] -> Bool
-infixValidator' [] = True
-infixValidator' (x:xs) | isOperator (head x) && isOperand (head xs) = infixValidator' xs
-                       | isOperand x && (isOperator (head (head xs)) || isBracket (head xs)) = infixValidator' xs
-                       | x == ")"  && (isOperator (head (head xs)) || head xs == ")") = infixValidator' xs 
-                       | x == "("  && (isOperator (head (head xs)) || head xs == "(") = infixValidator' xs 
+infixValidator' (x:[]) = True
+infixValidator' (x:xs) | isOperator (head x) && (isOperand (head xs) || head xs == "(") = infixValidator' xs
+                       | isOperand x && (isOperator (head (head xs)) || head xs == ")") = infixValidator' xs
+                       | x == ")"  && (isOperator (head (head xs))   || head xs == ")") = infixValidator' xs 
+                       | x == "("  && (isOperand (head xs)           || head xs == "(") = infixValidator' xs 
                        | otherwise = False
 
 countBrackets :: [String] -> Int -> Int -> Bool
