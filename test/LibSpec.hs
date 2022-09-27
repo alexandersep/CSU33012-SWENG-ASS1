@@ -37,9 +37,12 @@ spec = do
     it "Should return valid for (30 + 5) + 2" $ do
       infixValidator ["(", "30", "+", "5", ")", "+", "2"] `shouldBe` True
     
-    it "Should return valid for (30 + 5) + )" $ do
+    it "Should return invalid for (30 + 5) + )" $ do
       infixValidator ["(", "30", "+", "5", ")", "+", ")"] `shouldBe` False
     
-    it "Should return valid for (30 + 5) + 2)" $ do
+    it "Should return invalid for (30 + 5) + 2)" $ do
       infixValidator ["(", "30", "+", "5", ")", "+", "2", ")"] `shouldBe` False
+
+    it "Should return valid for (30 + 5) + 2" $ do
+      infixValidator ["(", "30", "+", "5", ")", "+", "2"] `shouldBe` True
     
