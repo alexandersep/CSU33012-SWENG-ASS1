@@ -79,30 +79,30 @@ spec = do
             (errorLeftAssociativity $ Nothing) `shouldBe` "Error, does not have associativity" 
 
     describe "Validate function for Infix Expressions" $ do
-        it "Should return False for (30 + 5)2" $ do
+        it "returns False for (30 + 5)2" $ do
           infixValidator ["(", "30", "+", "5", ")", "2"] `shouldBe` False
         
-        it "Should return True for (30 + 5) + 2" $ do
+        it "returns True for (30 + 5) + 2" $ do
           infixValidator ["(", "30", "+", "5", ")", "+", "2"] `shouldBe` True
         
-        it "Should return invalid for (30 + 5) + )" $ do
+        it "returns invalid for (30 + 5) + )" $ do
           infixValidator ["(", "30", "+", "5", ")", "+", ")"] `shouldBe` False
         
-        it "Should return False for (30 + 5) + 2)" $ do
+        it "returns False for (30 + 5) + 2)" $ do
           infixValidator ["(", "30", "+", "5", ")", "+", "2", ")"] `shouldBe` False
 
-        it "Should return True for (1 + -1) + 2" $ do
+        it "returns True for (1 + -1) + 2" $ do
           infixValidator ["(", "1", "+", "-1", ")", "+", "2"] `shouldBe` True
 
-        it "Should return True for (--1 + --2) + -2" $ do
+        it "returns True for (--1 + --2) + -2" $ do
           infixValidator ["(", "--1", "+", "--2", ")", "+", "-2"] `shouldBe` True
 
-        it "Should return False for () 1 + *) + 2" $ do
+        it "returns False for () 1 + *) + 2" $ do
           infixValidator ["(", ")", "1", "+", "*", ")", "+", "2"] `shouldBe` False
 
-        it "Should return False for (* + /) + 2" $ do
+        it "returns False for (* + /) + 2" $ do
           infixValidator ["(", "*", "+", "/", ")", "+", "2"] `shouldBe` False
 
-        it "Should return False for (- ------1 + 3)" $ do
+        it "returns False for (- ------1 + 3)" $ do
           infixValidator ["(", "-", "------1", "+", "3", ")"] `shouldBe` False
 
