@@ -5,10 +5,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-      with:
-        ghc-version: '8.6.5'
-        enable-stack: true
-        stack-version: 'latest'
     - uses: actions/cache@v3
       name: Cache ~/.stack
       with:
