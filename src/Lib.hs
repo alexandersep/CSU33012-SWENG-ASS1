@@ -87,8 +87,11 @@ splitToList :: String -> [String]
 splitToList []     = []
 splitToList (x:xs) 
  | x == ' '  = splitToList xs 
- | otherwise = (x : fst (spanNum)) : splitToList (removeSpaces (snd (spanNum)))
+ | isOperator x  = [x] : splitToList xs 
+ | isOperand [x] = (x : fst (spanNum)) : splitToList (snd (spanNum))
+ | otherwise = (x : fst (spanNum)) : fst (spanNum) : splitToList (snd (spanNum))-- (snd (spanNum))
  where spanNum = span (isNumber) xs
+       spanOp  = span (isOperator) xs
 
 removeSpaces :: String -> String
 removeSpaces xs = filter (not . isSpace) xs
