@@ -1,5 +1,11 @@
 name: Haskell CI
 on: [push]
+variables:
+  STACK_ROOT: "${CI_PROJECT_DIR}/.stack-root"
+cache:
+  paths:
+    - .stack-work/
+    - .stack-root/
 jobs:
   build:
     runs-on: ubuntu-latest
