@@ -1,6 +1,24 @@
 module LibSpec (spec) where
 
-import           Lib
+import Lib
+    ( isOperator,
+      charToString,
+      isOperand,
+      divideSafe,
+      operatorPrecedence,
+      errorPrecedence,
+      isOperatorLeftAssociative,
+      errorLeftAssociativity,
+      infixValidator,
+      push,
+      splitToList,
+      removeSpaces, 
+      infixToPostfix,
+      popRemaining,
+      popOperatorStack,
+      popOperatorStackUpToParen,
+      getFirstElem
+      )
 import           Test.Hspec
 import           Test.QuickCheck
 
@@ -129,3 +147,51 @@ spec = do
             splitToList "&" `shouldBe` ["&"]
         it "returns [\"&\",\"4\"] for \"&4\"" $ do
             splitToList "&4" `shouldBe` ["&","4"]
+    
+    describe "Validate function for infixToPostfix" $ do
+        it "returns [] for []" $ do
+            infixToPostfix [] `shouldBe` []
+        it "returns [\"3\", \"1\", \"+\"] for [\"3\", \"+\", \"1\"]" $ do
+            infixToPostfix ["3", "+", "1"] `shouldBe` ["3", "1", "+"]
+        it "returns [\"3\", \"1\", \"+\"] for [\"(\", \"3\", \"+\", \"1\", \")\"]" $ do
+            infixToPostfix ["(", "3", "+", "1", ")"] `shouldBe` ["3", "1", "+"]
+        it "returns [\"3\", \"1\", \"+\", \"4\", \"*\"] for [\"(\", \"3\", \"+\", \"1\", \")\", \"*\", \"4\"]" $ do
+            infixToPostfix ["(", "3", "+", "1", ")", "*", "4"] `shouldBe` ["3","1","+","4","*"]
+        it "returns [\"3\", \"1\", \"+\", \"4\", \"*\"] for [\"3\", \"+\", \"(\" \"1\", \"*\", \"4\", \")\"]" $ do
+            infixToPostfix ["3", "*", "(", "1", "+", "4", ")"] `shouldBe` ["3","1","4","+","*"]
+        it "returns [\"3\", \"1\", \"^\", \"4\", \"*\"] for [\"3\", \"^\", \"1\", \"*\", \"4\"]" $ do
+            infixToPostfix ["3", "^", "1", "/", "4"] `shouldBe` ["3","1","^","4","/"]
+        it "returns [\"3\", \"1\", \"*\", \"4\", \"^\"] for [\"(\", \"(\", \"3\", \"*\", \"1\", \")\", \"^\", \"4\", \")\"]" $ do
+            infixToPostfix ["(", "(", "3", "*", "1", ")", "^", "4", ")"] `shouldBe` ["3","1","*","4","^"]
+    
+    describe "Validate function for popRemaining" $ do
+        it "returns ([], [], []) for ([], [], [])" $ do
+            popRemaining ([], [], []) `shouldBe` ([], [], [])
+        it "returns ([\"+\"], [], [\"4\"]) for ([], [\"+\"], [\"4\"])" $ do
+            popRemaining ([], ["+"], ["4"]) `shouldBe` (["+"], [], ["4"])
+        it "returns ([\"3\", \"4\", \"+\", \"-\"], [], [\"4\"]) for ([\"3\", \"4\",], [\"+\", \"-\"], [\"4\"])" $ do
+            popRemaining (["3", "4"], ["+", "-"], ["4"]) `shouldBe` (["3", "4", "+", "-"], [], ["4"])
+        
+    describe "Validate function for popOperatorStack" $ do
+        it "returns ([], [\"+\"], []) for ([], [], []) \"+\"" $ do
+            popOperatorStack ([], [], []) "+" `shouldBe` ([], ["+"], []) 
+        it "returns ([\"3\"], [], [\"4\"]) for ([\"3\"], [\")\"], [\"4\"]) \"+\"" $ do
+            popOperatorStack (["3"], [")"], ["4"]) "+" `shouldBe` (["3"], ["+", ")"], ["4"])
+        it "returns ([\"3\", \"-\", \"+\"], [], [\"4\"]) for ([\"3\"], [\"-\", \"+\", \")\"], [\"4\"]) \"*\"" $ do
+            popOperatorStack (["3"], ["-", "+", ")"], ["4"]) "*" `shouldBe` (["3"],["*","-","+",")"],["4"])
+        it "returns ([\"3\"], [\"*\", \"/\", \")\"], [\"4\"]) for ([\"3\", \"*\", \"/\"], [\"+\", \")\"], [\"4\"]) \"+\"" $ do
+            popOperatorStack (["3"], ["*", "/", ")"], ["4"]) "+" `shouldBe` (["3", "*", "/"],["+",")"],["4"])
+    
+    describe "Validate function for popOperatorStackUpToParen" $ do
+        it "returns ([], [], []) for ([], [\"(\")], [])" $ do
+            popOperatorStackUpToParen ([], ["("], []) `shouldBe` ([], [], [])
+        it "returns ([], [], []) for ([], [], [])" $ do
+            popOperatorStackUpToParen ([], [], []) `shouldBe` ([], [], []) 
+        it "returns ([\"+\", \"-\"], [], []) for ([], [\"+\", \"-\", \"(\")], [])" $ do
+            popOperatorStackUpToParen ([], ["+", "-", "("], []) `shouldBe` (["+", "-"], [], [])
+    
+    describe "Validate function for getFirstElem" $ do
+        it "returns ([], [], []) for ([], [], [])" $ do
+            getFirstElem ([], ["3"], []) `shouldBe` []
+        it "returns [\"+\"] for ([\"+\"], [\"-\"], [\"/\"])" $ do
+            getFirstElem (["+"], ["-"], ["/"]) `shouldBe` ["+"]
