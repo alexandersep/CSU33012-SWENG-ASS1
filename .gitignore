@@ -2,3 +2,4 @@
 *.yaml 
 *.yaml.lock
 .stack-work/
+.vscode/
