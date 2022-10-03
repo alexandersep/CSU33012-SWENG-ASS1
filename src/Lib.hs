@@ -85,9 +85,6 @@ push n xs = reverse $ n : reverse xs
 
 splitToList :: String -> [String]
 splitToList []     = []
-splitToList (x:[])
- | x == ' '  =  []
- | otherwise = [[x]]
 splitToList (x:xs) 
  | x == ' '  = splitToList xs 
  | otherwise = (x : fst (spanNum)) : splitToList (removeSpaces (snd (spanNum)))
