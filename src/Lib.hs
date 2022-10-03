@@ -1,44 +1,17 @@
 module Lib
-    ( calculator, divideSafe, isOperator, isOperand, 
+    ( divideSafe, isOperator, isOperand, 
       charToString, operatorPrecedence, 
       isOperatorLeftAssociative,
       infixValidator,
       infixValidator', countBrackets, 
-      errorPrecedence, errorLeftAssociativity
+      errorPrecedence, errorLeftAssociativity,
+      splitToList, removeSpaces, push 
     ) where
 
-import Data.Char (isDigit, intToDigit)
+import Data.List (intersperse, groupBy)
+import Data.Char (isSpace, ord, digitToInt, isNumber, isDigit, intToDigit)
 import Data.Maybe (isJust, isNothing, fromMaybe)
 -- Source: https://en.m.wikipedia.org/wifi/Shunting_yard/algorithm
-
-calculator :: IO ()
-calculator  = do
-  putStrLn "This is my program. There are many like it but this one is mine."
-  -- putStrLn $ "0 / 3 = " ++ show (divideSafe 0 3)
-  -- putStrLn $ "10 / 2 = " ++ show (divideSafe 10 2)
-  -- putStrLn $ "10 / 0 = " ++ show (divideSafe 10 0)
-  -- putStrLn $ "isOperator '2'  = " ++ show (isOperator '2')
-  -- putStrLn $ "isOperator '*'  = " ++ show (isOperator '*')
-  -- putStrLn $ "isOperand 2  = " ++ show (isOperand "2")
-  -- putStrLn $ "isOperand *  = " ++ show (isOperand "*")
-  -- putStrLn $ "isOperand 100  = " ++ show (isOperand "100")
-  -- putStrLn $ "charToString a = " ++ show (charToString 'a')
-  -- putStrLn $ "operatorPrecedence a = " ++ show (operatorPrecedence 'a')
-  -- putStrLn $ "operatorPrecedence ^ = " ++ show (operatorPrecedence '^')
-  -- putStrLn $ "operatorPrecedence * = " ++ show (operatorPrecedence '*')
-  -- putStrLn $ "operatorPrecedence / = " ++ show (operatorPrecedence '/')
-  -- putStrLn $ "operatorPrecedence + = " ++ show (operatorPrecedence '+')
-  -- putStrLn $ "operatorPrecedence - = " ++ show (operatorPrecedence '-')
-  -- putStrLn $ "errorPrecedence Just 4 = " ++ show (errorPrecedence $ Just 4)
-  -- putStrLn $ "errorPrecedence Nothing = " ++ show (errorPrecedence Nothing)
-  -- putStrLn $ "isOperatorLeftAssociative a = " ++ show (isOperatorLeftAssociative 'a')
-  -- putStrLn $ "isOperatorLeftAssociative ^ = " ++ show (isOperatorLeftAssociative '^')
-  -- putStrLn $ "isOperatorLeftAssociative + = " ++ show (isOperatorLeftAssociative '+')
-  -- putStrLn $ "isOperatorLeftAssociative - = " ++ show (isOperatorLeftAssociative '-')
-  -- putStrLn $ "isOperatorLeftAssociative * = " ++ show (isOperatorLeftAssociative '*')
-  -- putStrLn $ "isOperatorLeftAssociative / = " ++ show (isOperatorLeftAssociative '/')
-  -- putStrLn $ "errorLeftAssociativity Just True = " ++ show (errorLeftAssociativity $ Just True)
-  -- putStrLn $ "errorLeftAssociativity Nothing = " ++ show (errorLeftAssociativity Nothing)
 
 isOperator :: Char -> Bool
 isOperator x
@@ -103,3 +76,22 @@ countBrackets (x:xs) open close
  | x == "("  = countBrackets xs (open+1) close
  | x == ")"  = countBrackets xs open (close+1)
  | otherwise = countBrackets xs open close
+
+-- Stack implementations
+push :: a -> [a] -> [a]
+push n xs = reverse $ n : reverse xs
+
+-- pop == init, init will cause error if popping empty list
+
+splitToList :: String -> [String]
+splitToList []     = []
+splitToList (x:[])
+ | x == ' '  =  []
+ | otherwise = [[x]]
+splitToList (x:xs) 
+ | x == ' '  = splitToList xs 
+ | otherwise = (x : fst (spanNum)) : splitToList (removeSpaces (snd (spanNum)))
+ where spanNum = span (isNumber) xs
+
+removeSpaces :: String -> String
+removeSpaces xs = filter (not . isSpace) xs

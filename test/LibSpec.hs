@@ -81,28 +81,43 @@ spec = do
     describe "Validate function for Infix Expressions" $ do
         it "returns False for (30 + 5)2" $ do
           infixValidator ["(", "30", "+", "5", ")", "2"] `shouldBe` False
-        
         it "returns True for (30 + 5) + 2" $ do
           infixValidator ["(", "30", "+", "5", ")", "+", "2"] `shouldBe` True
-        
         it "returns invalid for (30 + 5) + )" $ do
           infixValidator ["(", "30", "+", "5", ")", "+", ")"] `shouldBe` False
-        
         it "returns False for (30 + 5) + 2)" $ do
           infixValidator ["(", "30", "+", "5", ")", "+", "2", ")"] `shouldBe` False
-
         it "returns True for (1 + -1) + 2" $ do
           infixValidator ["(", "1", "+", "-1", ")", "+", "2"] `shouldBe` True
-
         it "returns True for (--1 + --2) + -2" $ do
           infixValidator ["(", "--1", "+", "--2", ")", "+", "-2"] `shouldBe` True
-
         it "returns False for () 1 + *) + 2" $ do
           infixValidator ["(", ")", "1", "+", "*", ")", "+", "2"] `shouldBe` False
-
         it "returns False for (* + /) + 2" $ do
           infixValidator ["(", "*", "+", "/", ")", "+", "2"] `shouldBe` False
-
         it "returns False for (- ------1 + 3)" $ do
           infixValidator ["(", "-", "------1", "+", "3", ")"] `shouldBe` False
 
+    describe "Validate function for removeSpaces" $ do
+        it "returns \"\" for \" \"" $ do
+            removeSpaces " " `shouldBe` ""
+        it "returns \"3+3342\" for \"3 + 334      2\"" $ do
+            removeSpaces "3 + 334      2" `shouldBe` "3+3342"
+
+    describe "Validate function for push" $ do
+        it "returns [1] for []" $ do
+            push 1 [] `shouldBe` [1]
+        it "returns [1,2,3,1] for [1,2,3]" $ do
+            push 1 [1,2,3] `shouldBe` [1,2,3,1]
+
+    describe "Validate function for splitToList" $ do
+        it "returns [] for []" $ do
+            splitToList [] `shouldBe` []
+        it "returns [] for \" \"" $ do
+            splitToList "" `shouldBe` []
+        it "returns [\"2\"] for \"   2   \"" $ do
+            splitToList "   2    " `shouldBe` ["2"]
+        it "returns [\"2\",\"3\"] for \"   2   3\"" $ do
+            splitToList "   2    3" `shouldBe` ["2","3"] 
+        it "returns [\"23\",\"+4\",\"-\",\"-\",\"-34\",\"-434\",\"-\",\"-34\",\"+2\"] for \"23 +4 ---34 -434 --34 + 2   \"" $ do
+            splitToList "23 +4 ---34 -434 --34 + 2   " `shouldBe` ["23","+4","-","-","-34","-434","-","-34","+2"]
