@@ -108,18 +108,19 @@ infixToPostfix' (xs, ys, z:zs)
  | z == ")" = infixToPostfix' (popOperatorStackUpToParen (xs, ys, zs))
 
 getFirstElem :: ([a], [a], [a]) -> [a]
-getFirstElem ([], _, _)  = []
 getFirstElem (x, _, _) = x
 
 popOperatorStack :: ([String], [String], [String]) -> String -> ([String], [String], [String])
 popOperatorStack (xs, [],  zs) op = (xs, [op], zs) 
-popOperatorStack (xs, y:ys, zs) op | isOperator (head y) && (operatorPrecedence (head y) > operatorPrecedence (head op)) = popOperatorStack (xs ++ [y], ys, zs) op
-                                   | otherwise = (xs, op:y:ys, zs)
+popOperatorStack (xs, y:ys, zs) op 
+ | isOperator (head y) && (operatorPrecedence (head y) > operatorPrecedence (head op)) = popOperatorStack (xs ++ [y], ys, zs) op
+ | otherwise = (xs, op:y:ys, zs)
 
 popOperatorStackUpToParen :: ([String], [String], [String]) -> ([String], [String], [String])
 popOperatorStackUpToParen (xs, [], zs) = (xs, [], zs)
-popOperatorStackUpToParen (xs, y:ys, zs) | y /= "(" = popOperatorStackUpToParen (xs ++ [y], ys, zs)
-                                         | otherwise = (xs, ys, zs)
+popOperatorStackUpToParen (xs, y:ys, zs) 
+ | y /= "(" = popOperatorStackUpToParen (xs ++ [y], ys, zs)
+ | otherwise = (xs, ys, zs)
 
 popRemaining :: ([String], [String], [String]) -> ([String], [String], [String])
 popRemaining (xs, [], zs) = (xs, [], zs)
