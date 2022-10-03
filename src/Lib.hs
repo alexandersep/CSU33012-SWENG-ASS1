@@ -14,18 +14,14 @@ import Data.Maybe (isJust, isNothing, fromMaybe)
 -- Source: https://en.m.wikipedia.org/wifi/Shunting_yard/algorithm
 
 isOperator :: Char -> Bool
-isOperator x
- | x == '+' || x == '-' || x == '*' || x == '/' || x == '^' = True
- | otherwise = False
+isOperator x = x `elem` "+-*/^"
 
 charToString :: Char -> String
 charToString x = [x]
 
 isOperand :: String -> Bool
 isOperand "-" = False
-isOperand (x:xs)
- | x == '-' = isOperand xs
- | x /= '-' = isDigit x && isOperand xs
+isOperand (x:xs) = (isDigit x || x == '-') && isOperand xs
 isOperand [] = True
 
 divideSafe :: (Eq a, Fractional a) => a -> a -> Maybe a
@@ -59,23 +55,25 @@ errorLeftAssociativity x =
 
 infixValidator :: [String] -> Bool
 infixValidator [] = False
-infixValidator xs = infixValidator' xs && countBrackets xs 0 0
+infixValidator xs = infixValidator' xs && countBrackets xs 0 0 
 
 infixValidator' :: [String] -> Bool
 infixValidator' (x:[]) = True
 infixValidator' (x:xs) 
- | isOperator (head x) && (isOperand (head xs) || head xs == "(") = infixValidator' xs
- | isOperand x && (isOperator (head (head xs)) || head xs == ")") = infixValidator' xs
- | x == ")"  && (isOperator (head (head xs))   || head xs == ")") = infixValidator' xs 
- | x == "("  && (isOperand (head xs)           || head xs == "(") = infixValidator' xs 
+ | isOperator (head x) && (firstOperandElem || head xs == "(") = infixValidator' xs
+ | isOperand x        && (firstOperatorElem || head xs == ")") = infixValidator' xs
+ | x == ")"           && (firstOperatorElem || head xs == ")") = infixValidator' xs 
+ | x == "("           && (firstOperandElem  || head xs == "(") = infixValidator' xs 
  | otherwise = False
+ where firstOperandElem  = isOperand . head  $ xs 
+       firstOperatorElem = isOperator . head . head $ xs
 
 countBrackets :: [String] -> Int -> Int -> Bool
 countBrackets [] open close = open == close 
 countBrackets (x:xs) open close 
  | x == "("  = countBrackets xs (open+1) close
  | x == ")"  = countBrackets xs open (close+1)
- | otherwise = countBrackets xs open close
+ | otherwise = countBrackets xs open close 
 
 -- Stack implementations
 push :: a -> [a] -> [a]
@@ -84,14 +82,12 @@ push n xs = reverse $ n : reverse xs
 -- pop == init, init will cause error if popping empty list
 
 splitToList :: String -> [String]
-splitToList []     = []
+splitToList [] = []
 splitToList (x:xs) 
- | x == ' '  = splitToList xs 
- | isOperator x  = [x] : splitToList xs 
- | isOperand [x] = (x : fst (spanNum)) : splitToList (snd (spanNum))
- | otherwise = (x : fst (spanNum)) : fst (spanNum) : splitToList (snd (spanNum))-- (snd (spanNum))
+ | x == ' '             = splitToList xs
+ | not (isOperand [x])  = [x] : splitToList xs 
+ | otherwise            = (x : fst (spanNum)) : splitToList (snd (spanNum))
  where spanNum = span (isNumber) xs
-       spanOp  = span (isOperator) xs
 
 removeSpaces :: String -> String
 removeSpaces xs = filter (not . isSpace) xs

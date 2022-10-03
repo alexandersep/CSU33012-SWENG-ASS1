@@ -19,7 +19,5 @@ jobs:
         key: ${{ runner.os }}-stack-work-${{ hashFiles('stack.yaml') }}-${{ hashFiles('package.yaml') }}-${{ hashFiles('**/*.hs') }}
         restore-keys: |
           ${{ runner.os }}-stack-work-
-    - name: Build
-      run: stack init
     - name: Run tests
       run: stack test

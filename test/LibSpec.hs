@@ -79,6 +79,8 @@ spec = do
             (errorLeftAssociativity $ Nothing) `shouldBe` "Error, does not have associativity" 
 
     describe "Validate function for Infix Expressions" $ do
+        it "returns False for []" $ do
+          infixValidator [] `shouldBe` False
         it "returns False for (30 + 5)2" $ do
           infixValidator ["(", "30", "+", "5", ")", "2"] `shouldBe` False
         it "returns True for (30 + 5) + 2" $ do
@@ -123,3 +125,7 @@ spec = do
             splitToList "   2    3" `shouldBe` ["2","3"] 
         it "returns [\"23\",\"+4\",\"-\",\"-\",\"-\",\"34\",\"-\",\"434\",\"-\",\"-\",\"34\",\"+\",\"2\"] for \"23 +4 ---34 -434 --34 + 2   \"" $ do
             splitToList "23 +4 ---34 -434 --34 + 2   " `shouldBe` ["23","+","4","-","-","-","34","-","434","-","-","34","+","2"]
+        it "returns [\"&\"] for \"&\"" $ do
+            splitToList "&" `shouldBe` ["&"]
+        it "returns [\"&\",\"4\"] for \"&4\"" $ do
+            splitToList "&4" `shouldBe` ["&","4"]
