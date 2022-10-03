@@ -11,10 +11,19 @@ jobs:
         enable-stack: true
         stack-version: 'latest'
     - uses: actions/cache@v3
+      name: Cache ~/.stack
       with:
-        path: .stack-work/
-        key: ${{ runner.os }}
-        restore-keys: ${{ runner.os }}-
+        path: ~/.stack
+        key: ${{ runner.os }}-stack-global-${{ hashFiles('stack.yaml') }}-${{ hashFiles('package.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-stack-global-
+    - uses: actions/cache@v3
+      name: Cache .stack-work
+      with:
+        path: .stack-work
+        key: ${{ runner.os }}-stack-work-${{ hashFiles('stack.yaml') }}-${{ hashFiles('package.yaml') }}-${{ hashFiles('**/*.hs') }}
+        restore-keys: |
+          ${{ runner.os }}-stack-work-
     - name: Build
       run: stack init
     - name: Run tests
