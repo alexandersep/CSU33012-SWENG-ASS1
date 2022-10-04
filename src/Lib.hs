@@ -132,7 +132,11 @@ evaluatePostfix :: [String] ->  Maybe Float
 evaluatePostfix = undefined
 
 evaluatePostfix' :: [String] -> [Float] -> Float
-evaluatePostfix' = undefined
+evaluatePostfix' [] [ys] = ys 
+evaluatePostfix' (x:xs) (y1:y2:ys) 
+ | isOperand x = evaluatePostfix' xs ((read x :: Float):y1:y2:ys)
+ | isOperator (head x) = evaluateExpression y1 x y2
+ | otherwise = error "Invalid string detected in evaluatePostfix'"
 
 evaluateExpression :: Float -> String -> Float -> Float
 evaluateExpression op1 oper op2 

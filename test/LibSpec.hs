@@ -210,3 +210,16 @@ spec = do
             evaluateExpression 3 "-" 2 `shouldBe` 1
         it "returns 9 for 3 ^ 2" $ do
             evaluateExpression 3 "^" 2 `shouldBe` 9
+
+    describe "Validate function for evaluatePostfix" $ do
+        it "returns Nothing for []" $ do
+            evaluatePostfix [] `shouldBe` Nothing
+        it "returns Just 5 for [\"3\" \"2\" \"+\"]" $ do
+            evaluatePostfix ["3", "2", "+"] `shouldBe` Just 5
+        it "returns Just 20 for [\"3\" \"2\" \"+\", \"4\", \"*\"]" $ do
+            evaluatePostfix ["3", "2", "+", "4", "*"] `shouldBe` Just 20
+        it "returns Just -6 for [\"3\" \"2\" \"4\", \"-\", \"*\"]" $ do
+            evaluatePostfix ["3", "2", "4", "-", "/"] `shouldBe` Just (-1.5)
+        it "returns Just X for [\"3\" \"2\" \"4\", \"-\", \"*\", \"5\", \"^\"]" $ do
+            evaluatePostfix ["3", "2", "+", "4", "*", "5", "^"] `shouldBe` Just 3200000 
+        
