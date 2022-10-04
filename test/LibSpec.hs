@@ -17,7 +17,10 @@ import Lib
       popRemaining,
       popOperatorStack,
       popOperatorStackUpToParen,
-      getFirstElem
+      getFirstElem,
+      evaluatePostfix,
+      evaluatePostfix',
+      evaluateExpression
       )
 import           Test.Hspec
 import           Test.QuickCheck
@@ -195,3 +198,15 @@ spec = do
             getFirstElem ([], ["3"], []) `shouldBe` []
         it "returns [\"+\"] for ([\"+\"], [\"-\"], [\"/\"])" $ do
             getFirstElem (["+"], ["-"], ["/"]) `shouldBe` ["+"]
+
+    describe "Validate function for evaluateExpression" $ do
+        it "returns 6 for 3 * 2" $ do
+            evaluateExpression 3 "*" 2 `shouldBe` 6 
+        it "returns 9 for 18 / 2" $ do
+            evaluateExpression 18 "/" 2 `shouldBe` 9
+        it "returns 5 for 3 + 2" $ do
+            evaluateExpression 3 "+" 2 `shouldBe` 5
+        it "returns 1 for 3 - 2" $ do
+            evaluateExpression 3 "-" 2 `shouldBe` 1
+        it "returns 9 for 3 ^ 2" $ do
+            evaluateExpression 3 "^" 2 `shouldBe` 9

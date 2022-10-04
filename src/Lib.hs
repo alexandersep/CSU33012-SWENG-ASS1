@@ -7,8 +7,9 @@ module Lib
       errorPrecedence, errorLeftAssociativity,
       splitToList, removeSpaces, push,
       infixToPostfix, popRemaining,
-      popOperatorStack, getFirstElem
-
+      popOperatorStack, getFirstElem,
+      evaluatePostfix, evaluatePostfix',
+      evaluateExpression
     ) where
 
 import Data.List (intersperse, groupBy)
