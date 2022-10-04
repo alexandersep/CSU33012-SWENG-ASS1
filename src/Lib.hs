@@ -8,6 +8,7 @@ module Lib
       splitToList, removeSpaces, push,
       infixToPostfix, popRemaining,
       popOperatorStack, getFirstElem
+
     ) where
 
 import Data.List (intersperse, groupBy)
@@ -125,3 +126,12 @@ popOperatorStackUpToParen (xs, y:ys, zs)
 popRemaining :: ([String], [String], [String]) -> ([String], [String], [String])
 popRemaining (xs, [], zs) = (xs, [], zs)
 popRemaining (xs, y:ys, zs) = popRemaining (xs ++ [y], ys, zs)                                  
+
+evaluatePostfix :: [String] ->  Maybe Float
+evaluatePostfix = undefined
+
+evaluatePostfix' :: [String] -> [Float] -> Float
+evaluatePostfix' = undefined
+
+evaluateExpression :: Float -> String -> Float -> Float
+evaluateExpression = undefined
