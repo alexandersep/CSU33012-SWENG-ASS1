@@ -115,7 +115,7 @@ getFirstElem (x, _, _) = x
 popOperatorStack :: ([String], [String], [String]) -> String -> ([String], [String], [String])
 popOperatorStack (xs, [],  zs) op = (xs, [op], zs)
 popOperatorStack (xs, y:ys, zs) op
- | isOperator (head y) && (operatorPrecedence (head y) > operatorPrecedence (head op)) = popOperatorStack (xs ++ [y], ys, zs) op
+ | isOperator (head y) && (operatorPrecedence (head y) >= operatorPrecedence (head op)) = popOperatorStack (xs ++ [y], ys, zs) op
  | otherwise = (xs, op:y:ys, zs)
 
 popOperatorStackUpToParen :: ([String], [String], [String]) -> ([String], [String], [String])
