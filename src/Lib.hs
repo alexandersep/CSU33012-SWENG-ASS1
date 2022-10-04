@@ -13,7 +13,7 @@ module Lib
 import Data.List (intersperse, groupBy)
 import Data.Char (isSpace, ord, digitToInt, isNumber, isDigit, intToDigit)
 import Data.Maybe (isJust, isNothing, fromMaybe)
--- Source: https://en.m.wikipedia.org/wifi/Shunting_yard/algorithm
+-- Source: https://en.wikipedia.org/wiki/Shunting_yard_algorithm
 
 isOperator :: Char -> Bool
 isOperator x = x `elem` "+-*/^"
