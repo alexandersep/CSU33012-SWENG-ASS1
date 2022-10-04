@@ -135,4 +135,10 @@ evaluatePostfix' :: [String] -> [Float] -> Float
 evaluatePostfix' = undefined
 
 evaluateExpression :: Float -> String -> Float -> Float
-evaluateExpression = undefined
+evaluateExpression op1 oper op2 
+ | oper == "+" = op1 +  op2
+ | oper == "*" = op1 *  op2
+ | oper == "/" = op1 /  op2
+ | oper == "-" = op1 -  op2
+ | oper == "^" = op1 ** op2
+ | otherwise = error "Invalid string provided as operator"
