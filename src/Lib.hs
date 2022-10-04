@@ -60,7 +60,7 @@ infixValidator [] = False
 infixValidator xs = infixValidator' xs && countBrackets xs 0 0 
 
 infixValidator' :: [String] -> Bool
-infixValidator' (x:[]) = True
+infixValidator' [x] = True
 infixValidator' (x:xs) 
  | isOperator (head x) && (firstOperandElem || head xs == "(") = infixValidator' xs
  | isOperand x        && (firstOperatorElem || head xs == ")") = infixValidator' xs
@@ -88,11 +88,11 @@ splitToList [] = []
 splitToList (x:xs) 
  | x == ' '             = splitToList xs
  | not (isOperand [x])  = [x] : splitToList xs 
- | otherwise            = (x : fst (spanNum)) : splitToList (snd (spanNum))
- where spanNum = span (isNumber) xs
+ | otherwise            = (x : fst spanNum) : splitToList (snd spanNum)
+ where spanNum = span isNumber xs
 
 removeSpaces :: String -> String
-removeSpaces xs = filter (not . isSpace) xs
+removeSpaces = filter (not . isSpace)
 
 infixToPostfix :: [String] -> [String]
 infixToPostfix [] = []
