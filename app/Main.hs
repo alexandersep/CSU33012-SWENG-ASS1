@@ -16,6 +16,5 @@ main = do
         then do let expr = splitToList $ infixExpr  
                 putStr "The answer is: "
                 putStrLn $ show infixCalculation 
-        else do putStrLn "Invalid"
-                putStrLn "The answer cannot be calculated"
+        else    putStrLn "Invalid, the answer cannot be calculated"
     return ()

@@ -1,36 +1,27 @@
 module Lib
-    ( divideSafe, isOperator, isOperand,
-      charToString, operatorPrecedence,
+    ( isOperator, isOperand,
+      operatorPrecedence,
       isOperatorLeftAssociative,
       infixValidator, popOperatorStackUpToParen,
       infixValidator', countBrackets,
       errorPrecedence, errorLeftAssociativity,
-      splitToList, removeSpaces, push,
+      splitToList, removeSpaces,
       infixToPostfix, popRemaining,
       popOperatorStack, getFirstElem,
       evaluatePostfix, evaluatePostfix',
       evaluateExpression
     ) where
 
-import Data.List (intersperse, groupBy)
-import Data.Char (isSpace, ord, digitToInt, isNumber, isDigit, intToDigit)
-import Data.Maybe (isJust, isNothing, fromMaybe)
+import Data.Char (isSpace, isNumber, isDigit) 
 -- Source: https://en.wikipedia.org/wiki/Shunting_yard_algorithm
 
 isOperator :: Char -> Bool
 isOperator x = x `elem` "+-*/^"
 
-charToString :: Char -> String
-charToString x = [x]
-
 isOperand :: String -> Bool
 isOperand "-"    = False
 isOperand (x:xs) = isDigit x || x == '-' && isOperand xs
 isOperand []     = True
-
-divideSafe :: (Eq a, Fractional a) => a -> a -> Maybe a
-divideSafe _ 0 = Nothing
-divideSafe x y = Just $ x / y
 
 operatorPrecedence :: Char -> Maybe Int
 operatorPrecedence x
@@ -79,12 +70,6 @@ countBrackets (x:xs) open close
  | x == ")"  = countBrackets xs open (close+1)
  | otherwise = countBrackets xs open close
 
--- Stack implementations
-push :: a -> [a] -> [a]
-push n xs = reverse $ n : reverse xs
-
--- pop == init, init will cause error if popping empty list
-
 splitToList :: String -> [String]
 splitToList [] = []
 splitToList (x:xs)
@@ -120,8 +105,6 @@ popOperatorStack (xs, y:ys, zs) op
  | isOperator (head y) &&
     (operatorPrecedence (head y) > operatorPrecedence (head op)) && y /= "^" = popOperatorStack (xs ++ [y], ys, zs) op
  | otherwise = (xs, op:y:ys, zs)
- where headY  = head y
-       headOp = head op
 
 popOperatorStackUpToParen :: ([String], [String], [String]) -> ([String], [String], [String])
 popOperatorStackUpToParen (xs, [], zs) = (xs, [], zs)

@@ -2,15 +2,12 @@ module LibSpec (spec) where
 
 import Lib
     ( isOperator,
-      charToString,
       isOperand,
-      divideSafe,
       operatorPrecedence,
       errorPrecedence,
       isOperatorLeftAssociative,
       errorLeftAssociativity,
       infixValidator,
-      push,
       splitToList,
       removeSpaces, 
       infixToPostfix,
@@ -27,14 +24,6 @@ import           Test.QuickCheck
 
 spec :: Spec
 spec = do
-    describe "Validate function for divideSafe" $ do
-        it "returns Just 0 for 0/3" $ do
-            (divideSafe 0 3)  `shouldBe` Just 0
-        it "returns Just 5 for 10/2" $ do
-            (divideSafe 10 2) `shouldBe` Just 5
-        it "returns Nothing for 10/0" $ do
-            (divideSafe 10 0) `shouldBe` Nothing
-
     describe "Validate function for isOperator" $ do
         it "returns True for isOperator 2" $ do
             (isOperator '2') `shouldBe` False 
@@ -54,10 +43,6 @@ spec = do
             (isOperand "-----1") `shouldBe` True
         it "returns True for isOperand - ------1" $ do
             (isOperand "- -----1") `shouldBe` False
-
-    describe "Validate function for charToString" $ do
-        it "returns 1 for charToString 1" $ do
-            (charToString '1') `shouldBe` "1" 
 
     describe "Validate function for operatorPrecedence" $ do
         it "returns Nothing for operatorPrecedence a" $ do
@@ -126,12 +111,6 @@ spec = do
             removeSpaces " " `shouldBe` ""
         it "returns \"3+3342\" for \"3 + 334      2\"" $ do
             removeSpaces "3 + 334      2" `shouldBe` "3+3342"
-
-    describe "Validate function for push" $ do
-        it "returns [1] for []" $ do
-            push 1 [] `shouldBe` [1]
-        it "returns [1,2,3,1] for [1,2,3]" $ do
-            push 1 [1,2,3] `shouldBe` [1,2,3,1]
 
     describe "Validate function for splitToList" $ do
         it "returns [] for []" $ do
