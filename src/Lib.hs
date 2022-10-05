@@ -89,7 +89,7 @@ splitToList :: String -> [String]
 splitToList [] = []
 splitToList (x:xs)
  | x == ' '             = splitToList xs
- | not (isOperand [x])  = [x] : splitToList xs
+ | not (isOperand [x]) && x /= '-' = [x] : splitToList xs
  | otherwise            = fstSpan : sndSpan 
  where spanNum = span isNumber xs
        fstSpan = x : fst spanNum
@@ -117,7 +117,8 @@ getFirstElem (x, _, _) = x
 popOperatorStack :: ([String], [String], [String]) -> String -> ([String], [String], [String])
 popOperatorStack (xs, [],  zs) op = (xs, [op], zs)
 popOperatorStack (xs, y:ys, zs) op
- | isOperator headY && operatorPrecedence headY > operatorPrecedence headOp = popOperatorStack (xs ++ [y], ys, zs) op
+ | isOperator (head y) &&
+    (operatorPrecedence (head y) > operatorPrecedence (head op)) && y /= "^" = popOperatorStack (xs ++ [y], ys, zs) op
  | otherwise = (xs, op:y:ys, zs)
  where headY  = head y
        headOp = head op

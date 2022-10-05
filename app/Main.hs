@@ -11,11 +11,11 @@ main = do
     infixExpr <- getLine
     let splitInfixExrp = splitToList $ infixExpr
     let isInfixValid = infixValidator $ splitInfixExrp 
-    let infixCalculation = infixToPostfix $ splitInfixExrp 
-    if isInfixValid == True 
+    let infixCalculation = evaluatePostfix . infixToPostfix $ splitInfixExrp 
+    if isInfixValid
         then do let expr = splitToList $ infixExpr  
                 putStr "The answer is: "
                 putStrLn $ show infixCalculation 
         else do putStrLn "Invalid"
-                putStrLn "The answer cannot be calculated" 
+                putStrLn "The answer cannot be calculated"
     return ()
