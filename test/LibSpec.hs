@@ -31,6 +31,8 @@ spec = do
             (isOperator '*') `shouldBe` True 
 
     describe "Validate function for isOperand" $ do
+        it "returns False for isOperand []" $ do
+            (isOperand []) `shouldBe` False 
         it "returns True for isOperand 2" $ do
             (isOperand "2") `shouldBe` True
         it "returns False for isOperand *" $ do

@@ -21,7 +21,7 @@ isOperator x = x `elem` "+-*/^"
 isOperand :: String -> Bool
 isOperand "-"    = False
 isOperand (x:xs) = isDigit x || x == '-' && isOperand xs
-isOperand []     = True
+isOperand []     = False
 
 operatorPrecedence :: Char -> Maybe Int
 operatorPrecedence x
@@ -121,7 +121,6 @@ evaluatePostfix [] = Nothing
 evaluatePostfix xs = Just $ evaluatePostfix' xs []
 
 evaluatePostfix' :: [String] -> [Float] -> Float
-evaluatePostfix' [] []       = 0
 evaluatePostfix' [] [ys]     = ys
 evaluatePostfix' (x:xs) []   = evaluatePostfix' xs [read x :: Float]
 evaluatePostfix' (x:xs) [ys] = evaluatePostfix' xs $ (read x :: Float):[ys]
