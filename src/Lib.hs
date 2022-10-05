@@ -103,7 +103,8 @@ popOperatorStack :: ([String], [String], [String]) -> String -> ([String], [Stri
 popOperatorStack (xs, [],  zs) op = (xs, [op], zs)
 popOperatorStack (xs, y:ys, zs) op
  | isOperator (head y) &&
-    (operatorPrecedence (head y) > operatorPrecedence (head op)) && y /= "^" = popOperatorStack (xs ++ [y], ys, zs) op
+    ((operatorPrecedence (head y) > operatorPrecedence (head op)) 
+    || (operatorPrecedence (head y) == operatorPrecedence (head op) && op /= "^")) = popOperatorStack (xs ++ [y], ys, zs) op
  | otherwise = (xs, op:y:ys, zs)
 
 popOperatorStackUpToParen :: ([String], [String], [String]) -> ([String], [String], [String])
