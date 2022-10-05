@@ -115,7 +115,8 @@ getFirstElem (x, _, _) = x
 popOperatorStack :: ([String], [String], [String]) -> String -> ([String], [String], [String])
 popOperatorStack (xs, [],  zs) op = (xs, [op], zs)
 popOperatorStack (xs, y:ys, zs) op
- | isOperator (head y) && (operatorPrecedence (head y) >= operatorPrecedence (head op)) = popOperatorStack (xs ++ [y], ys, zs) op
+ | isOperator (head y) &&
+    (operatorPrecedence (head y) > operatorPrecedence (head op)) && y /= "^" = popOperatorStack (xs ++ [y], ys, zs) op
  | otherwise = (xs, op:y:ys, zs)
 
 popOperatorStackUpToParen :: ([String], [String], [String]) -> ([String], [String], [String])
@@ -139,7 +140,7 @@ evaluatePostfix' (x:xs) [] = evaluatePostfix' xs [read x :: Float]
 evaluatePostfix' (x:xs) [ys] = evaluatePostfix' xs ((read x :: Float):[ys])
 evaluatePostfix' (x:xs) (y1:y2:ys)
  | isOperand x = evaluatePostfix' xs ((read x :: Float):y1:y2:ys)
- | otherwise = evaluatePostfix' xs ((evaluateExpression y2 x y1):ys)
+ | otherwise = evaluatePostfix' xs (evaluateExpression y2 x y1:ys)
 
 evaluateExpression :: Float -> String -> Float -> Float
 evaluateExpression op1 oper op2
