@@ -60,7 +60,7 @@ spec = do
         it "returns Just 2 for operatorPrecedence -" $ do
             (operatorPrecedence '-') `shouldBe` Just 2 
 
-    describe "Validate function for isOperatorLeftAssociative" $ do
+    describe "Validate function for errorPrecedence" $ do
         it "returns It has a precedence for operatorPrecedence Just 4" $ do
             (errorPrecedence $ Just 4) `shouldBe` "It has a precedence"
         it "returns Error, does not have associativity for operatorPrecedence Nothing" $ do
