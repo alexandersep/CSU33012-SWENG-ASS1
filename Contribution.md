@@ -13,6 +13,13 @@
       `errorLeftAssociativity`, `removeSpaces`, `splitToList`.
     - Implemented the basic Input and Output when running programme. 
 * Niall Sauvage
+    - Implemented the following functions and their respective unit tests `infixValidator`, `popOperatorStackUpToParen`,
+      `infixValidator'`, `countBrackets`, `infixToPostfix`, 
+      `popOperatorStack`, `getFirstElem`, `evaluatePostfix`, `evaluatePostfix'`,
+      `evaluateExpression`.
+    - Implemented parsing of inputted string into postfix once it has been split.
+    - Implemented evaluation of resulting postfix strings into single answer.
+    - Worked on changes to Main.hs.
 
 ### Graph of commit logs
 * Main Branch \
