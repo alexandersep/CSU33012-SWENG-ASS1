@@ -9,7 +9,7 @@ import Lib
       popOperatorStackUpToParen, getFirstElem,
       evaluatePostfix, evaluateExpression, combineUnaryOperators,
       removeUnaryHeadPositive, removePlusNum, addZeroStringUnaryHeadPositiveOrNegative,
-      combineNum
+      combineNum, countBrackets
       )
 import           Test.Hspec
 import           Test.QuickCheck
@@ -282,3 +282,17 @@ spec = do
             combineNum ["+","3"] `shouldBe` ["+","3"]
         it "returns [\"0\",\"-\",\"3\",\"*\",\"2\",\"/\",\"5\",\"+\",\"1\",\"-\",\"(\",\"(\",\"-1\",\"-\",\"0\",\")\",\"-\",\"(\",\"-1\",\"+\",\"2\",\")\",\")\",\"*\",\"4\"] for [\"0\",\"-\",\"3\",\"*\",\"2\",\"/\",\"5\",\"+\",\"1\",\"-\",\"(\",\"(\",\"-\",\"1\",\"-\",\"0\",\")\",\"-\",\"(\",\"-\",\"1\",\"+\",\"2\",\")\",\")\",\"*\",\"4\"]" $ do
             combineNum ["0","-","3","*","2","/","5","+","1","-","(","(","-","1","-","0",")","-","(","-","1","+","2",")",")","*","4"] `shouldBe`["0","-","3","*","2","/","5","+","1","-","(","(","-1","-","0",")","-","(","-1","+","2",")",")","*","4"] 
+    
+    describe "Validate function for countBrackets" $ do
+        it "returns false for [] 0 1" $ do
+            countBrackets [] 0 1 `shouldBe` False
+        it "returns true for [] 0 0" $ do
+            countBrackets [] 0 0 `shouldBe` True
+        it "returns true for [\"(\", \"(\", \")\", \")\"]" $ do
+            countBrackets ["(", "(", ")", ")"] 0 0 `shouldBe` True
+        it "returns false for [\"(\", \"(\", \")\", \")\"]" $ do
+            countBrackets ["(", "(", ")"] 0 0 `shouldBe` False
+        it "returns true for [\"(\", \"3\", \"(\", \"^\", \")\", \"+\", \")\"]" $ do
+            countBrackets ["(", "3", "(", "^", ")", "+", ")"] 0 0 `shouldBe` True
+        it "returns false for [\"(\", \"3\", \"(\", \"^\", \")\", \"+\"]" $ do
+            countBrackets ["(", "3", "(", "^", ")", "+"] 0 0 `shouldBe` False
