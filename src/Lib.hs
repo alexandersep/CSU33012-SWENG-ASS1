@@ -2,17 +2,19 @@ module Lib
     ( isOperator, isOperand,
       operatorPrecedence,
       isOperatorLeftAssociative,
-      infixValidator, popOperatorStackUpToParen,
-      infixValidator', countBrackets,
+      infixValidator, infixValidator', popOperatorStackUpToParen,
+      infixToPostfix', countBrackets,
       errorPrecedence, errorLeftAssociativity,
       splitToList, removeSpaces,
       infixToPostfix, popRemaining,
       popOperatorStack, getFirstElem,
-      evaluatePostfix, evaluatePostfix',
-      evaluateExpression
+      evaluatePostfix, evaluateExpression, 
+      removeUnaryHeadPositive, combineUnaryOperators,
+      addZeroStringUnaryHeadPositiveOrNegative, removePlusNum
     ) where
 
 import Data.Char (isSpace, isNumber, isDigit) 
+
 -- Source: https://en.wikipedia.org/wiki/Shunting_yard_algorithm
 
 isOperator :: Char -> Bool
@@ -48,12 +50,18 @@ errorLeftAssociativity x =
         Just _  -> "It has an associativity"
         Nothing -> "Error, does not have associativity"
 
+--  0--3*2+(-4/2)^2-(1-(1+1))  
+--   ^ ^^^^^ ^^^
+--     
 infixValidator :: [String] -> Bool
-infixValidator [] = False
 infixValidator xs = infixValidator' xs && countBrackets xs 0 0
 
 infixValidator' :: [String] -> Bool
-infixValidator' [x] = True
+infixValidator' [] = False
+infixValidator' [")"] = True
+infixValidator' [x]
+ | isOperand x = True
+ | otherwise   = False 
 infixValidator' (x:xs)
  | isOperator (head x) && (firstOperandElem || head xs == "(") = infixValidator' xs
  | isOperand x        && (firstOperatorElem || head xs == ")") = infixValidator' xs
@@ -69,6 +77,42 @@ countBrackets (x:xs) open close
  | x == "("  = countBrackets xs (open+1) close
  | x == ")"  = countBrackets xs open (close+1)
  | otherwise = countBrackets xs open close
+
+addZeroStringUnaryHeadPositiveOrNegative :: [String] -> [String]
+addZeroStringUnaryHeadPositiveOrNegative [] = []
+addZeroStringUnaryHeadPositiveOrNegative [x] = [x]
+addZeroStringUnaryHeadPositiveOrNegative (x:y:xs)
+ | x == "-" && length y == 2 && isOperand y = "0":x:y:xs 
+ | x == "+"  = "0":x:y:xs
+ | otherwise = x:y:xs
+
+removePlusNum :: [String] -> [String]
+removePlusNum [] = []
+removePlusNum [x] = [x]
+removePlusNum (x:y:[]) = x : [y] 
+removePlusNum (x:y:z:xs)
+ | notOperandX && plusRule = x : z : removePlusNum xs
+ | otherwise               = x : removePlusNum (y:z:xs)
+ where notOperandX = not $ isOperand x
+       plusRule    = y == "+" && isOperand z
+
+removeUnaryHeadPositive :: [String] -> [String]
+removeUnaryHeadPositive [] = []
+removeUnaryHeadPositive (x:xs)
+ | x == "+" = xs
+ | otherwise = x:xs
+
+combineUnaryOperators :: [String] -> [String]
+combineUnaryOperators [] = []
+combineUnaryOperators [x] = [x]
+combineUnaryOperators (x:y:xs)
+ | isOperand x  = x : y : combineUnaryOperators (xs)
+ | minusRule    = combineUnaryOperators ("-":xs)
+ | plusRule     = combineUnaryOperators ("+":xs)
+ | y /= "+" && y /= "-" = x : y : combineUnaryOperators xs
+ | otherwise    =  x : y : combineUnaryOperators xs
+ where minusRule   = x == "+" && y == "-" || x == "-" && y == "+"
+       plusRule    = x == "+" && y == "+" || x == "-" && y == "-"
 
 splitToList :: String -> [String]
 splitToList [] = []
@@ -137,3 +181,4 @@ evaluateExpression op1 opr op2
  | opr == "-" = op1 -  op2
  | opr == "^" = op1 ** op2
  | otherwise = error "Invalid string provided as operator"
+

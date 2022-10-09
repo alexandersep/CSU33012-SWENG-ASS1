@@ -9,7 +9,7 @@ main = do
     putStr "Please input an infix expression: "
     hFlush stdout -- flush standard output explicitly in order to run getLine in the same line as putStr
     infixExpr <- getLine
-    let splitInfixExrp = splitToList $ infixExpr
+    let splitInfixExrp = splitToList . concat . removePlusNum . addZeroStringUnaryHeadPositiveOrNegative . removeUnaryHeadPositive . combineUnaryOperators . splitToList $ infixExpr
     let isInfixValid = infixValidator $ splitInfixExrp 
     let infixCalculation = evaluatePostfix . infixToPostfix $ splitInfixExrp 
     if isInfixValid

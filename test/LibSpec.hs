@@ -1,23 +1,14 @@
 module LibSpec (spec) where
 
 import Lib
-    ( isOperator,
-      isOperand,
-      operatorPrecedence,
-      errorPrecedence,
-      isOperatorLeftAssociative,
-      errorLeftAssociativity,
-      infixValidator,
-      splitToList,
-      removeSpaces, 
-      infixToPostfix,
-      popRemaining,
-      popOperatorStack,
-      popOperatorStackUpToParen,
-      getFirstElem,
-      evaluatePostfix,
-      evaluatePostfix',
-      evaluateExpression
+    ( isOperator, isOperand,
+      operatorPrecedence, errorPrecedence,
+      isOperatorLeftAssociative, errorLeftAssociativity,
+      infixValidator, infixValidator', splitToList, removeSpaces, 
+      infixToPostfix, infixToPostfix', popRemaining, popOperatorStack,
+      popOperatorStackUpToParen, getFirstElem,
+      evaluatePostfix, evaluateExpression, combineUnaryOperators,
+      removeUnaryHeadPositive, removePlusNum, addZeroStringUnaryHeadPositiveOrNegative
       )
 import           Test.Hspec
 import           Test.QuickCheck
@@ -108,6 +99,10 @@ spec = do
         it "returns False for (- ------1 + 3)" $ do
           infixValidator ["(", "-", "------1", "+", "3", ")"] `shouldBe` False
 
+    describe "Validate function for infixValidator'" $ do
+        it "returns False for [\"&\"]" $ do
+          infixValidator' ["&"] `shouldBe` False
+
     describe "Validate function for removeSpaces" $ do
         it "returns \"\" for \" \"" $ do
             removeSpaces " " `shouldBe` ""
@@ -147,6 +142,10 @@ spec = do
             infixToPostfix ["3", "^", "1", "/", "4"] `shouldBe` ["3","1","^","4","/"]
         it "returns [\"3\", \"1\", \"*\", \"4\", \"^\"] for [\"(\", \"(\", \"3\", \"*\", \"1\", \")\", \"^\", \"4\", \")\"]" $ do
             infixToPostfix ["(", "(", "3", "*", "1", ")", "^", "4", ")"] `shouldBe` ["3","1","*","4","^"]
+
+    describe "Validate function for infixToPostfix'" $ do
+        it "returns ([\"5\"], [], []) for ([\"5\"], [], [])" $ do
+            infixToPostfix' (["5"],[],[]) `shouldBe` (["5"],[],[]) 
     
     describe "Validate function for popRemaining" $ do
         it "returns ([], [], []) for ([], [], [])" $ do
@@ -157,6 +156,8 @@ spec = do
             popRemaining (["3", "4"], ["+", "-"], ["4"]) `shouldBe` (["3", "4", "+", "-"], [], ["4"])
         
     describe "Validate function for popOperatorStack" $ do
+        it "returns ([\"3\"], [\"^\",\"^\"], [\"5\"]) for ([], [], []) \"^\"" $ do
+            popOperatorStack (["3"], ["^","^"], ["5"]) "^" `shouldBe` (["3"], ["^","^","^"], ["5"])
         it "returns ([], [\"+\"], []) for ([], [], []) \"+\"" $ do
             popOperatorStack ([], [], []) "+" `shouldBe` ([], ["+"], []) 
         it "returns ([\"3\"], [], [\"4\"]) for ([\"3\"], [\")\"], [\"4\"]) \"+\"" $ do
@@ -203,4 +204,68 @@ spec = do
             evaluatePostfix ["3", "2", "4", "-", "/"] `shouldBe` Just (-1.5)
         it "returns Just X for [\"3\" \"2\" \"4\", \"-\", \"*\", \"5\", \"^\"]" $ do
             evaluatePostfix ["3", "2", "+", "4", "*", "5", "^"] `shouldBe` Just 3200000 
+
+    describe "Validate function for removePlusNum" $ do
+        it "returns [] for []" $ do
+            removePlusNum [] `shouldBe` []
+        it "returns [\"+\"] for [\"+\"]" $ do
+            removePlusNum ["+"] `shouldBe` ["+"]
+        it "returns [\"+\",\"3\"] for [\"+\",\"3\"]" $ do
+            removePlusNum ["+","3"] `shouldBe` ["+","3"]
+        it "returns [\"3\",\"+\",\"(\",\"3\",\")\"] for [\"3\",\"+\",\"(\",\"+\",\"3\",\")\"]" $ do
+            removePlusNum ["3","+","(","+","3",")"] `shouldBe` ["3","+","(","3",")"]
+
+
+    describe "Validate function for addZeroStringUnaryHeadPositiveOrNegative" $ do
+        it "returns [] for []" $ do
+            addZeroStringUnaryHeadPositiveOrNegative [] `shouldBe` []
+        it "returns [\"-\"] for [\"-\"]" $ do
+            addZeroStringUnaryHeadPositiveOrNegative ["-"] `shouldBe` ["-"]
+        it "returns [\"+\"] for [\"+\"]" $ do
+            addZeroStringUnaryHeadPositiveOrNegative ["+"] `shouldBe` ["+"]
+        it "returns [\"0\",\"+\",\"3\"] for [\"+\",\"3\"]" $ do 
+            addZeroStringUnaryHeadPositiveOrNegative ["+","3"] `shouldBe` ["0","+","3"]
+        it "returns [\"-3\"] for [\"-3\"]" $ do
+            addZeroStringUnaryHeadPositiveOrNegative ["-3"] `shouldBe` ["-3"]
+        it "returns [\"/\",\"-\"] for [\"/\",\"-\"]" $ do
+            addZeroStringUnaryHeadPositiveOrNegative ["/","-"] `shouldBe` ["/","-"]
+        it "returns [\"0\",\"-\",\"-3\"] for [\"-\",\"-3\"]" $ do
+            addZeroStringUnaryHeadPositiveOrNegative ["-","-3"] `shouldBe` ["0","-","-3"]
+
+    describe "Validate function for removeUnaryHeadPositive" $ do
+        it "returns [] for []" $ do
+            removeUnaryHeadPositive [] `shouldBe` []
+        it "returns [] for [\"+\"]" $ do
+            removeUnaryHeadPositive ["+"] `shouldBe` []
+        it "returns [\"3\"] for [\"+\",\"3\"]" $ do 
+            removeUnaryHeadPositive ["+","3"] `shouldBe` ["3"]
+        it "returns [\"-\",\"3\"] for [\"-\",\"3\"]" $ do
+            removeUnaryHeadPositive ["-","3"] `shouldBe` ["-","3"]
         
+    describe "Validate function for combineUnaryOperators" $ do
+        it "returns [] for []" $ do
+            combineUnaryOperators [] `shouldBe` []            
+        it "returns [\"0\",\"-\",\"-3\",\"*\",\"2\",\"+\",\"(\",\"-4\",\"/\",\"2\",\")\",\"**\",\"2\",\"-\",\"(\",\"1\",\"-\",\"(\",\"1\",\"+\",\"£\",\"-\",\"$\"] for  [\"0\",\"-\",\"-3\",\"*\",\"2\",\"+\",\"(\",\"-4\",\"/\",\"2\",\")\",\"**\",\"2\",\"-\",\"(\",\"1\",\"-\",\"(\",\"1\",\"+\",\"£\",\"-\",\"$\"]" $ do
+            combineUnaryOperators ["0","-","-3","*","2","+","(","-4","/","2",")","**","2","-","(","1","-","(","1","+","£","-","$"] `shouldBe` ["0","-","-3","*","2","+","(","-4","/","2",")","**","2","-","(","1","-","(","1","+","£","-","$"]
+        it "returns [\"-\",\"&\"] for [\"-\",\"&\"]" $ do
+            combineUnaryOperators ["-","&"] `shouldBe` ["-","&"]
+        it "returns [\"-\"] for [\"-\"]" $ do
+            combineUnaryOperators ["-"] `shouldBe` ["-"]
+        it "returns [\"-\",\"3\"] for [\"-\",\"3\"]" $ do
+            combineUnaryOperators ["-","3"] `shouldBe` ["-","3"]
+        it "returns [\"-\",\"3\"] for [\"+\",\"-\",\"3\"]" $ do
+            combineUnaryOperators ["+","-","3"] `shouldBe` ["-","3"]
+        it "returns [\"+\"] for [\"+\"]" $ do 
+            combineUnaryOperators ["+"] `shouldBe` ["+"]
+        it "returns [\"-\"] for [\"-\",\"+\"]" $ do
+            combineUnaryOperators ["-","+"] `shouldBe` ["-"]
+        it "returns [\"-\"] for [\"+\",\"-\"]" $ do 
+            combineUnaryOperators ["+","-"] `shouldBe` ["-"]
+        it "returns [\"-\"] for [\"-\",\"-\"]" $ do
+            combineUnaryOperators ["-","-"] `shouldBe` ["+"]
+        it "returns [\"-\"] for [\"+\",\"+\"]" $ do
+            combineUnaryOperators ["+","+"] `shouldBe` ["+"]
+        it "returns [\"-\",\"^\",\"+\",\"/\",\"-\",\"*\",\"3\",\"/\",\"+\",\"4\"] for [\"-\",\"+\",\"^\",\"+\",\"+\",\"-\",\"-\",\"/\",\"-\",\"*\",\"3\",\"/\",\"-\",\"-\",\"+\",\"4\"]" $ do
+            combineUnaryOperators ["-","+","^","+","+","-","-","/","-","*","3","/","-","-","+","4"] `shouldBe`  ["-","^","+","/","-","*","3","/","+","4"] 
+
+
