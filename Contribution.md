@@ -12,7 +12,8 @@
       `isOperator`, `iOperand`, `operatorPrecedence`, `errorPrecedence`,
       `isOperatorLeftAssociative`, `errorLeftAssociativity`, `removeSpaces`,
       `splitToList`, `addZeroStringUnaryHeadPositiveOrNegative`,
-      `combineUnaryOperators`, `removeUnaryHeadPositive`, `removePlusNum`
+      `combineUnaryOperators`, `removeUnaryHeadPositive`, `removePlusNum`,
+      `combineNum`
     - Implemented the basic Input and Output when running programme. 
     - Implemented Unary parsing, `-` and `+` and ensured it worked effectively
       with Niall's evaluator, and validators.
