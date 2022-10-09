@@ -89,7 +89,7 @@ addZeroStringUnaryHeadPositiveOrNegative (x:y:xs)
 removePlusNum :: [String] -> [String]
 removePlusNum [] = []
 removePlusNum [x] = [x]
-removePlusNum (x:y:[]) = x : [y] 
+removePlusNum [x,y] = x : [y] 
 removePlusNum (x:y:z:xs)
  | notOperandX && plusRule = x : z : removePlusNum xs
  | otherwise               = x : removePlusNum (y:z:xs)
@@ -106,7 +106,7 @@ combineUnaryOperators :: [String] -> [String]
 combineUnaryOperators [] = []
 combineUnaryOperators [x] = [x]
 combineUnaryOperators (x:y:xs)
- | isOperand x  = x : y : combineUnaryOperators (xs)
+ | isOperand x  = x : y : combineUnaryOperators xs
  | minusRule    = combineUnaryOperators ("-":xs)
  | plusRule     = combineUnaryOperators ("+":xs)
  | y /= "+" && y /= "-" = x : y : combineUnaryOperators xs

@@ -1,24 +1,28 @@
 # CSU33012 - Software Engineering - Assignment 1
-* Infix validator and calculator written in **Haskell** using *Hunit*, *QuckTest* 
+* Infix validator and calculator written in **Haskell** using *Hunit*, *QuckCheck* 
   for unit testing and github workflow actions.
 
 ## Contributors & Contributions
 * Alexander Sepelenco
     - Acted as github lead with organising, README, issues, pull requests, 
-      github workflow, and setting up Haskell with stack. 
+      github workflow, and setting up Haskell with stack.
+    - Set up Haskell unit testing: Hunit, and Quickcheck.
     - Set up github including github workflow with caching.
-    - Set up Haskell unit testing Hunit, Quickcheck.
-    - Implemented unit tests and functions for `isOperator`, `iOperand`,
-      `operatorPrecedence`, `errorPrecedence`, `isOperatorLeftAssociative`, 
-      `errorLeftAssociativity`, `removeSpaces`, `splitToList`.
+    - Implemented the following functions and their respective unit tests
+      `isOperator`, `iOperand`, `operatorPrecedence`, `errorPrecedence`,
+      `isOperatorLeftAssociative`, `errorLeftAssociativity`, `removeSpaces`,
+      `splitToList`, `addZeroStringUnaryHeadPositiveOrNegative`,
+      `combineUnaryOperators`, `removeUnaryHeadPositive`, `removePlusNum`
     - Implemented the basic Input and Output when running programme. 
+    - Implemented Unary parsing, `-` and `+` and ensured it worked effectively
+      with Niall's evaluator, and validators.
 * Niall Sauvage
-    - Implemented the following functions and their respective unit tests `infixValidator`, `popOperatorStackUpToParen`,
-      `infixValidator'`, `countBrackets`, `infixToPostfix`, 
-      `popOperatorStack`, `getFirstElem`, `evaluatePostfix`, `evaluatePostfix'`,
-      `evaluateExpression`.
+    - Implemented the following functions and their respective unit tests 
+      `infixValidator`, `popOperatorStackUpToParen`, `infixValidator'`, 
+      `countBrackets`, `infixToPostfix`, `popOperatorStack`, `getFirstElem`, 
+      `evaluatePostfix`, `evaluatePostfix'`, `evaluateExpression`.
     - Implemented parsing of inputted string into postfix once it has been split.
-    - Implemented evaluation of resulting postfix strings into single answer.
+    - Implemented evaluation of resulting postfix strings into a single answer.
     - Worked on changes to Main.hs.
 
 ### Graph of commit logs

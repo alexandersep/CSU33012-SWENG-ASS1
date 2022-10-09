@@ -17,65 +17,65 @@ spec :: Spec
 spec = do
     describe "Validate function for isOperator" $ do
         it "returns True for isOperator 2" $ do
-            (isOperator '2') `shouldBe` False 
+            isOperator '2' `shouldBe` False 
         it "returns False for isOperator *" $ do
-            (isOperator '*') `shouldBe` True 
+            isOperator '*' `shouldBe` True 
 
     describe "Validate function for isOperand" $ do
         it "returns False for isOperand []" $ do
-            (isOperand []) `shouldBe` False 
+            isOperand [] `shouldBe` False 
         it "returns True for isOperand 2" $ do
-            (isOperand "2") `shouldBe` True
+            isOperand "2" `shouldBe` True
         it "returns False for isOperand *" $ do
-            (isOperand "*") `shouldBe` False
+            isOperand "*" `shouldBe` False
         it "returns True for isOperand 100" $ do
-            (isOperand "100") `shouldBe` True
+            isOperand "100" `shouldBe` True
         it "returns True for isOperand -1" $ do
-            (isOperand "-1") `shouldBe` True
+            isOperand "-1" `shouldBe` True
         it "returns True for isOperand ------1" $ do
-            (isOperand "-----1") `shouldBe` True
+            isOperand "-----1" `shouldBe` True
         it "returns True for isOperand - ------1" $ do
-            (isOperand "- -----1") `shouldBe` False
+            isOperand "- -----1" `shouldBe` False
 
     describe "Validate function for operatorPrecedence" $ do
         it "returns Nothing for operatorPrecedence a" $ do
-            (operatorPrecedence 'a') `shouldBe` Nothing 
+            operatorPrecedence 'a' `shouldBe` Nothing 
         it "returns Just 4 for operatorPrecedence ^" $ do
-            (operatorPrecedence '^') `shouldBe` Just 4 
+            operatorPrecedence '^' `shouldBe` Just 4 
         it "returns Just 3 for operatorPrecedence *" $ do
-            (operatorPrecedence '*') `shouldBe` Just 3 
+            operatorPrecedence '*' `shouldBe` Just 3 
         it "returns Just 3 for operatorPrecedence /" $ do
-            (operatorPrecedence '/') `shouldBe` Just 3 
+            operatorPrecedence '/' `shouldBe` Just 3 
         it "returns Just 2 for operatorPrecedence +" $ do
-            (operatorPrecedence '+') `shouldBe` Just 2
+            operatorPrecedence '+' `shouldBe` Just 2
         it "returns Just 2 for operatorPrecedence -" $ do
-            (operatorPrecedence '-') `shouldBe` Just 2 
+            operatorPrecedence '-' `shouldBe` Just 2 
 
     describe "Validate function for errorPrecedence" $ do
         it "returns It has a precedence for operatorPrecedence Just 4" $ do
-            (errorPrecedence $ Just 4) `shouldBe` "It has a precedence"
+            errorPrecedence (Just 4) `shouldBe` "It has a precedence"
         it "returns Error, does not have associativity for operatorPrecedence Nothing" $ do
-            (errorPrecedence $ Nothing) `shouldBe` "Error, does not have a precedence" 
+            errorPrecedence Nothing `shouldBe` "Error, does not have a precedence" 
 
     describe "Validate function for isOperatorLeftAssociative" $ do
         it "returns Nothing for isOperatorLeftAssociative a" $ do
-            (isOperatorLeftAssociative 'a') `shouldBe` Nothing
+            isOperatorLeftAssociative 'a' `shouldBe` Nothing
         it "returns Just False for isOperatorLeftAssociative ^" $ do
-            (isOperatorLeftAssociative '^') `shouldBe` Just False 
+            isOperatorLeftAssociative '^' `shouldBe` Just False 
         it "returns Just True for isOperatorLeftAssociative +" $ do
-            (isOperatorLeftAssociative '+') `shouldBe` Just True
+            isOperatorLeftAssociative '+' `shouldBe` Just True
         it "returns Just True for isOperatorLeftAssociative -" $ do
-            (isOperatorLeftAssociative '-') `shouldBe` Just True
+            isOperatorLeftAssociative '-' `shouldBe` Just True
         it "returns Just True for isOperatorLeftAssociative *" $ do
-            (isOperatorLeftAssociative '*') `shouldBe` Just True
+            isOperatorLeftAssociative '*' `shouldBe` Just True
         it "returns Just True for isOperatorLeftAssociative /" $ do
-            (isOperatorLeftAssociative '/') `shouldBe` Just True
+            isOperatorLeftAssociative '/' `shouldBe` Just True
 
     describe "Validate function for errorLeftAssociativity" $ do
         it "returns Error, does not have associativity for errorLeftAssociativity Just True" $ do
-            (errorLeftAssociativity $ Just True) `shouldBe` "It has an associativity" 
+            errorLeftAssociativity (Just True) `shouldBe` "It has an associativity" 
         it "returns Error, does not have associativity for errorLeftAssociativity Nothing" $ do
-            (errorLeftAssociativity $ Nothing) `shouldBe` "Error, does not have associativity" 
+            errorLeftAssociativity Nothing `shouldBe` "Error, does not have associativity" 
 
     describe "Validate function for Infix Expressions" $ do
         it "returns False for []" $ do
