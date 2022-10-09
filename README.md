@@ -10,12 +10,22 @@ Haskell Implementation of Unit testing a basic calculator
 6. Run Haskell programme with `./run.sh`.
 
 ## Calculator Usage & Examples 
-* Inputs include brackets, negative numbers and operands "+-/\*"
+* Inputs include brackets, negative operands, operands, operators "+-/\*^" and unary operators "+-"
 ```bash
 ./run.sh
 Haskell Infix Calculator, Note: Input without Quotes e.g. 2 + 3 instead of "2 + 3"
 Please input an infix expression: -3 *-2 / 5 + 1 - ((1 - 0) - ( -1 --2))*4
 The answer is: Just 2.2
+
+./run.sh
+Haskell Infix Calculator, Note: Input without Quotes e.g. 2 + 3 instead of "2 + 3"
+Please input an infix expression: --- -+ + - + -- 3 *+-+-2 / -- 5 + 1 - (  (- 1 - 0) - ( -1 --2)  )*  4
+The answer is: Just 7.8
+
+./run.sh
+Haskell Infix Calculator, Note: Input without Quotes e.g. 2 + 3 instead of "2 + 3"
+Please input an infix expression: 3 * (-3 * 3) + 0 + 0 - 1 - 1 - 1 + ( +0 + 0) *--4
+The answer is: Just (-30.0)
 ```
 
 ### Report with Contributions
