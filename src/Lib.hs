@@ -10,7 +10,8 @@ module Lib
       popOperatorStack, getFirstElem,
       evaluatePostfix, evaluateExpression, 
       removeUnaryHeadPositive, combineUnaryOperators,
-      addZeroStringUnaryHeadPositiveOrNegative, removePlusNum
+      addZeroStringUnaryHeadPositiveOrNegative, removePlusNum,
+      combineNum
     ) where
 
 import Data.Char (isSpace, isNumber, isDigit) 
@@ -50,9 +51,6 @@ errorLeftAssociativity x =
         Just _  -> "It has an associativity"
         Nothing -> "Error, does not have associativity"
 
---  0--3*2+(-4/2)^2-(1-(1+1))  
---   ^ ^^^^^ ^^^
---     
 infixValidator :: [String] -> Bool
 infixValidator xs = infixValidator' xs && countBrackets xs 0 0
 
@@ -82,7 +80,7 @@ addZeroStringUnaryHeadPositiveOrNegative :: [String] -> [String]
 addZeroStringUnaryHeadPositiveOrNegative [] = []
 addZeroStringUnaryHeadPositiveOrNegative [x] = [x]
 addZeroStringUnaryHeadPositiveOrNegative (x:y:xs)
- | x == "-" && length y == 2 && isOperand y = "0":x:y:xs 
+ | x == "-" && isOperand y = "0":x:y:xs 
  | x == "+"  = "0":x:y:xs
  | otherwise = x:y:xs
 
@@ -91,7 +89,7 @@ removePlusNum [] = []
 removePlusNum [x] = [x]
 removePlusNum [x,y] = x : [y] 
 removePlusNum (x:y:z:xs)
- | notOperandX && plusRule = x : z : removePlusNum xs
+ | notOperandX && x /= ")" && plusRule = x : z : removePlusNum xs
  | otherwise               = x : removePlusNum (y:z:xs)
  where notOperandX = not $ isOperand x
        plusRule    = y == "+" && isOperand z
@@ -106,19 +104,31 @@ combineUnaryOperators :: [String] -> [String]
 combineUnaryOperators [] = []
 combineUnaryOperators [x] = [x]
 combineUnaryOperators (x:y:xs)
- | isOperand x  = x : y : combineUnaryOperators xs
+ | isOperand x  = x : combineUnaryOperators (y:xs)
  | minusRule    = combineUnaryOperators ("-":xs)
  | plusRule     = combineUnaryOperators ("+":xs)
  | y /= "+" && y /= "-" = x : y : combineUnaryOperators xs
- | otherwise    =  x : y : combineUnaryOperators xs
+ | otherwise    =  x : combineUnaryOperators (y:xs)
  where minusRule   = x == "+" && y == "-" || x == "-" && y == "+"
        plusRule    = x == "+" && y == "+" || x == "-" && y == "-"
+
+combineNum :: [String] -> [String]
+combineNum [] = []
+combineNum [x] = [x]
+combineNum (x:y:[])
+ | x == "-" && isOperand y = [x ++ y]
+ | otherwise               = x : [y]
+combineNum (x:y:z:xs)
+ | not (isOperand x) && x /= ")" &&
+    (y == "+" || y == "-") && 
+    isOperand z = x : (y ++ z) : combineNum xs
+ | otherwise    = x : combineNum (y:z:xs)
 
 splitToList :: String -> [String]
 splitToList [] = []
 splitToList (x:xs)
  | x == ' '             = splitToList xs
- | not (isOperand [x]) && x /= '-' = [x] : splitToList xs
+ | not (isOperand [x])  = [x] : splitToList xs
  | otherwise            = fstSpan : sndSpan 
  where spanNum = span isNumber xs
        fstSpan = x : fst spanNum

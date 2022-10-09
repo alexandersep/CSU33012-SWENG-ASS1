@@ -8,7 +8,8 @@ import Lib
       infixToPostfix, infixToPostfix', popRemaining, popOperatorStack,
       popOperatorStackUpToParen, getFirstElem,
       evaluatePostfix, evaluateExpression, combineUnaryOperators,
-      removeUnaryHeadPositive, removePlusNum, addZeroStringUnaryHeadPositiveOrNegative
+      removeUnaryHeadPositive, removePlusNum, addZeroStringUnaryHeadPositiveOrNegative,
+      combineNum
       )
 import           Test.Hspec
 import           Test.QuickCheck
@@ -117,11 +118,11 @@ spec = do
         it "returns [\"2\"] for \"   2   \"" $ do
             splitToList "   2    " `shouldBe` ["2"]
         it "returns [\"3\",\"+\",\"-\",\"3\",\"2\"] for \"     3 + -3 2  " $ do
-            splitToList "        3 + -3 2   " `shouldBe` ["3","+","-3","2"] 
+            splitToList "        3 + -3 2   " `shouldBe` ["3","+","-","3","2"] 
         it "returns [\"2\",\"3\"] for \"   2   3\"" $ do
             splitToList "   2    3" `shouldBe` ["2","3"] 
         it "returns [\"23\",\"+4\",\"-\",\"-\",\"-\",\"34\",\"-\",\"434\",\"-\",\"-\",\"34\",\"+\",\"2\"] for \"23 +4 ---34 -434 --34 + 2   \"" $ do
-            splitToList "23 +4 ---34 -434 --34 + 2   " `shouldBe` ["23","+","4","-","-","-34","-434","-","-34","+","2"]
+            splitToList "23 +4 ---34 -434 --34 + 2   " `shouldBe` ["23","+","4","-","-","-","34","-","434","-","-","34","+","2"]
         it "returns [\"&\"] for \"&\"" $ do
             splitToList "&" `shouldBe` ["&"]
         it "returns [\"&\",\"4\"] for \"&4\"" $ do
@@ -268,4 +269,16 @@ spec = do
         it "returns [\"-\",\"^\",\"+\",\"/\",\"-\",\"*\",\"3\",\"/\",\"+\",\"4\"] for [\"-\",\"+\",\"^\",\"+\",\"+\",\"-\",\"-\",\"/\",\"-\",\"*\",\"3\",\"/\",\"-\",\"-\",\"+\",\"4\"]" $ do
             combineUnaryOperators ["-","+","^","+","+","-","-","/","-","*","3","/","-","-","+","4"] `shouldBe`  ["-","^","+","/","-","*","3","/","+","4"] 
 
-
+    describe "Validate function for combineNum" $ do
+        it "returns [] for []" $ do
+            combineNum [] `shouldBe` []            
+        it "returns [\"-\"] for [\"+\"]" $ do
+            combineNum ["+"] `shouldBe` ["+"]
+        it "returns [\"-\"] for [\"-\",\"3\"]" $ do
+            combineNum ["-","3"] `shouldBe` ["-3"]
+        it "returns [\"+\",\"3\"] for [\"+\",\"3\"]" $ do
+            combineNum ["+","3"] `shouldBe` ["+","3"]
+        it "returns [\"+\",\"3\"] for [\"+\",\"3\"]" $ do
+            combineNum ["+","3"] `shouldBe` ["+","3"]
+        it "returns [\"0\",\"-\",\"3\",\"*\",\"2\",\"/\",\"5\",\"+\",\"1\",\"-\",\"(\",\"(\",\"-1\",\"-\",\"0\",\")\",\"-\",\"(\",\"-1\",\"+\",\"2\",\")\",\")\",\"*\",\"4\"] for [\"0\",\"-\",\"3\",\"*\",\"2\",\"/\",\"5\",\"+\",\"1\",\"-\",\"(\",\"(\",\"-\",\"1\",\"-\",\"0\",\")\",\"-\",\"(\",\"-\",\"1\",\"+\",\"2\",\")\",\")\",\"*\",\"4\"]" $ do
+            combineNum ["0","-","3","*","2","/","5","+","1","-","(","(","-","1","-","0",")","-","(","-","1","+","2",")",")","*","4"] `shouldBe`["0","-","3","*","2","/","5","+","1","-","(","(","-1","-","0",")","-","(","-1","+","2",")",")","*","4"] 
