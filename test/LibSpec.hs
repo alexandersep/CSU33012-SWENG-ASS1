@@ -275,7 +275,7 @@ spec = do
         it "returns [\"-\"] for [\"+\"]" $ do
             combineNum ["+"] `shouldBe` ["+"]
         it "returns [\"-\"] for [\"-\",\"3\"]" $ do
-            combineNum ["-","3"] `shouldBe` ["-3"]
+            combineNum ["-","3"] `shouldBe` ["-","3"]
         it "returns [\"+\",\"3\"] for [\"+\",\"3\"]" $ do
             combineNum ["+","3"] `shouldBe` ["+","3"]
         it "returns [\"+\",\"3\"] for [\"+\",\"3\"]" $ do
