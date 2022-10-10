@@ -26,7 +26,14 @@
     - Implemented evaluation of resulting postfix strings into a single answer.
     - Worked on changes to Main.hs.
 
-### Graph of commit logs
+### Graph/commit logs
+* Graph of commit logs \
+    * Graph Part 3 \
+    ![Graph 3](imgs/graph3.png)
+    * Graph Part 2 \
+    ![Graph 2](imgs/graph2.png)
+    * Graph Part 1 \
+    ![Graph 1](imgs/graph1.png)
 * Main Branch \
 ![Main branch](imgs/main.png) 
 \newpage
